@@ -1,0 +1,82 @@
+
+# Package - acme.test.v1
+# Service - TestService
+TestService: {
+  shape: class
+	+GetTestMessage(input: GetTestMessageRequest): (GetTestMessageResponse)
+	+CreateTestMessage(input: CreateTestMessageRequest): (CreateTestMessageResponse)
+}
+
+# Edges from package to service
+"acme.test.v1" -> TestService
+# Edges from service to RPC types
+TestService <- GetTestMessageRequest: GetTestMessage
+TestService -> GetTestMessageResponse: GetTestMessage
+# Edges from service to RPC types
+TestService <- CreateTestMessageRequest: CreateTestMessage
+TestService -> CreateTestMessageResponse: CreateTestMessage
+
+# Class - Address
+Address: {
+  shape: class
+  street: string
+  city: string
+  state: string
+  country: string
+}
+
+# Class - TestMessage
+TestMessage: {
+  shape: class
+  id: string
+  name: string
+  items: string
+  status: Status
+  address: Address
+  metadata: map<string, string>
+  text_payload: string
+  binary_payload: bytes
+}
+TestMessage -> Status
+TestMessage -> Address
+
+# Class - GetTestMessageRequest
+GetTestMessageRequest: {
+  shape: class
+  id: string
+}
+
+# Class - GetTestMessageResponse
+GetTestMessageResponse: {
+  shape: class
+  message: TestMessage
+}
+GetTestMessageResponse -> TestMessage
+
+# Class - CreateTestMessageRequest
+CreateTestMessageRequest: {
+  shape: class
+  message: TestMessage
+}
+CreateTestMessageRequest -> TestMessage
+
+# Class - CreateTestMessageResponse
+CreateTestMessageResponse: {
+  shape: class
+  message: TestMessage
+}
+CreateTestMessageResponse -> TestMessage
+
+
+# Enum - Status
+Status: {
+  grid-columns: 2
+  grid-gap: 0
+  Status_STATUS_UNSPECIFIED
+  Status_STATUS_ACTIVE
+  Status_STATUS_INACTIVE
+  0
+  1
+  2
+}
+
