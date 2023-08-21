@@ -39,7 +39,7 @@ var tmpl = template.Must(template.New("d2Diagram").Funcs(template.FuncMap{
   shape: class
 
   {{- range .Methods}}
-	+{{.GoName}}(input: {{.Input.GoIdent.GoName}}): ({{.Output.GoIdent.GoName}})
+	+{{.GoName}}(input: {{if .Desc.IsStreamingClient}}stream {{end}}{{.Input.GoIdent.GoName}}): ({{if .Desc.IsStreamingServer}}stream {{end}}{{.Output.GoIdent.GoName}})
   {{- end}}
 }
 
