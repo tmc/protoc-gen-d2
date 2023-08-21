@@ -10,9 +10,7 @@ import (
 	"oss.terrastruct.com/d2/d2layouts/d2elklayout"
 	"oss.terrastruct.com/d2/d2lib"
 	"oss.terrastruct.com/d2/d2renderers/d2svg"
-	"oss.terrastruct.com/d2/d2themes/d2themescatalog"
 	"oss.terrastruct.com/d2/lib/textmeasure"
-	"oss.terrastruct.com/util-go/go2"
 )
 
 // generateFile processes a single proto file.
@@ -51,9 +49,7 @@ func renderSvg(contents string, outFilePath string) error {
 	if err != nil {
 		return err
 	}
-	out, err := d2svg.Render(diagram, &d2svg.RenderOpts{
-		ThemeID: go2.Pointer(d2themescatalog.GrapeSoda.ID),
-	})
+	out, err := d2svg.Render(diagram, &d2svg.RenderOpts{})
 	if err != nil {
 		return err
 	}

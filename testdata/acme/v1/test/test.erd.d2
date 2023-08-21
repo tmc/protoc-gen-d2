@@ -15,6 +15,45 @@ TestService -> TestMessage: GetTestMessage
 # Edges from service to RPC types
 TestService <- CreateRequest: CreateTestMessage
 TestService -> TestMessage: CreateTestMessage
+
+# Class - Address
+Address: {
+  shape: class
+  street: string
+  city: string
+  state: string
+  country: string
+}
+
+# Class - TestMessage
+TestMessage: {
+  shape: class
+  id: string
+  name: string
+  items: string
+  status: Status
+  address: Address
+  metadata: map<string, string>
+  text_payload: string
+  binary_payload: bytes
+}
+TestMessage -> Status
+TestMessage -> Address
+
+# Class - TestRequest
+TestRequest: {
+  shape: class
+  id: string
+}
+
+# Class - CreateRequest
+CreateRequest: {
+  shape: class
+  message: TestMessage
+}
+CreateRequest -> TestMessage
+
+
 # Enum - Status
 Status: {
   grid-columns: 2
@@ -26,36 +65,4 @@ Status: {
   1
   2
 }
-# Class - Address
-Address: {
-  shape: class
-       street: string
-       city: string
-       state: string
-       country: string
-}
-# Class - TestMessage
-TestMessage: {
-  shape: class
-       id: string
-       name: string
-       items: string
-       status: Status
-       address: Address
-       metadata: map<string, string>
-       text_payload: string
-       binary_payload: bytes
-}
-TestMessage -> Status
-TestMessage -> Address
-# Class - TestRequest
-TestRequest: {
-  shape: class
-       id: string
-}
-# Class - CreateRequest
-CreateRequest: {
-  shape: class
-       message: TestMessage
-}
-CreateRequest -> TestMessage
+

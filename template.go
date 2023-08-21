@@ -56,7 +56,24 @@ var tmpl = template.Must(template.New("d2Diagram").Funcs(template.FuncMap{
 {{- end}}
 {{- end}}
 
-{{- range .Enums}}
+{{- range .Messages}}
+{{ $message := . }}
+# Class - {{d2Name .}}
+{{d2Name .}}: {
+  shape: class
+  {{- range .Fields}}
+  {{.Desc.TextName}}: {{fieldType .}}
+  {{- end}}
+}
+{{- range .Fields}}
+  {{- if or .Enum (and .Message (not .Desc.IsMap)) }}
+{{d2Name $message}} -> {{fieldType .}}
+  {{- end }}
+{{- end }}
+
+{{- end}}
+
+{{ range .Enums}}
 # Enum - {{.GoIdent.GoName}}
 {{.GoIdent.GoName}}: {
   grid-columns: 2
@@ -70,20 +87,4 @@ var tmpl = template.Must(template.New("d2Diagram").Funcs(template.FuncMap{
 }
 {{- end}}
 
-{{- range .Messages}}
-{{- $message := . }}
-# Class - {{d2Name .}}
-{{d2Name .}}: {
-  shape: class
-  {{- range .Fields}}
-       {{.Desc.TextName}}: {{fieldType .}}
-  {{- end}}
-}
-{{- range .Fields}}
-  {{- if or .Enum (and .Message (not .Desc.IsMap)) }}
-{{d2Name $message}} -> {{fieldType .}}
-  {{- end }}
-{{- end }}
-
-{{- end}}
 `))
