@@ -19,10 +19,16 @@ enum Status {
 
 // Address nested message.
 message Address {
+  enum AddressTypeStatus {
+    ADDRESS_TYPE_STATUS_UNSPECIFIED = 0;
+    ADDRESS_TYPE_STATUS_HOME = 1;
+    ADDRESS_TYPE_STATUS_WORK = 2;
+  }
   string street = 1;
   string city = 2;
   string state = 3;
   string country = 4;
+  AddressTypeStatus type = 5;
 }
 
 // Sample message representing our test proto.

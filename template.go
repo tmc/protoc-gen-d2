@@ -55,14 +55,14 @@ var tmpl = template.Must(template.New("d2Diagram").Funcs(template.FuncMap{
 
 {{- end}}
 {{- end}}
-
+# oh yueah
 {{- range .Messages}}
 {{ $message := . }}
 # Class - {{d2Name .}}
 {{d2Name .}}: {
   shape: class
   {{- range .Fields}}
-  {{.Desc.TextName}}: {{fieldType .}}
+  {{.Desc.TextName}}: {{if eq .Desc.Cardinality.String "repeated"}}repeated {{end}}{{fieldType .}}
   {{- end}}
 }
 {{- range .Fields}}

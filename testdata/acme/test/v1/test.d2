@@ -15,6 +15,7 @@ TestService -> GetTestMessageResponse: GetTestMessage
 # Edges from service to RPC types
 TestService <- CreateTestMessageRequest: CreateTestMessage
 TestService -> CreateTestMessageResponse: CreateTestMessage
+# oh yueah
 
 # Class - Address
 Address: {
@@ -23,17 +24,19 @@ Address: {
   city: string
   state: string
   country: string
+  type: Address_AddressTypeStatus
 }
+Address -> Address_AddressTypeStatus
 
 # Class - TestMessage
 TestMessage: {
   shape: class
   id: string
   name: string
-  items: string
+  items: repeated string
   status: Status
   address: Address
-  metadata: map<string, string>
+  metadata: repeated map<string, string>
   text_payload: string
   binary_payload: bytes
 }
