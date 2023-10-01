@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
 
 	"google.golang.org/protobuf/compiler/protogen"
 	"oss.terrastruct.com/d2/d2graph"
@@ -23,21 +22,26 @@ func generateFile(gen *protogen.Plugin, f *protogen.File) {
 		gen.Error(err)
 		return
 	}
-	// write out d2 file:
-	if err := ioutil.WriteFile(f.GeneratedFilenamePrefix+".erd.d2", buf.Bytes(), 0600); err != nil {
+	gf := gen.NewGeneratedFile(f.GeneratedFilenamePrefix+".d2", f.GoImportPath)
+	if _, err := gf.Write(buf.Bytes()); err != nil {
 		gen.Error(err)
 		return
 	}
 
-	// call the helper function to render the SVG
-	if err := renderSvg(buf.String(), f.GeneratedFilenamePrefix+".erd.svg"); err != nil {
+	svgf := gen.NewGeneratedFile(f.GeneratedFilenamePrefix+".svg", f.GoImportPath)
+	svg, err := renderSvg(buf.String())
+	if err != nil {
+		gen.Error(err)
+		return
+	}
+	if _, err := svgf.Write(svg); err != nil {
 		gen.Error(err)
 		return
 	}
 }
 
 // renderSvg is a helper function that calls the D2 libraries to render the SVG output
-func renderSvg(contents string, outFilePath string) error {
+func renderSvg(contents string) ([]byte, error) {
 	ruler, _ := textmeasure.NewRuler()
 	defaultLayout := func(engine string) (d2graph.LayoutGraph, error) {
 		return d2elklayout.DefaultLayout, nil
@@ -47,11 +51,7 @@ func renderSvg(contents string, outFilePath string) error {
 		Ruler:          ruler,
 	}, &d2svg.RenderOpts{})
 	if err != nil {
-		return err
+		return nil, err
 	}
-	out, err := d2svg.Render(diagram, &d2svg.RenderOpts{})
-	if err != nil {
-		return err
-	}
-	return ioutil.WriteFile(outFilePath, out, 0600)
+	return d2svg.Render(diagram, &d2svg.RenderOpts{})
 }
