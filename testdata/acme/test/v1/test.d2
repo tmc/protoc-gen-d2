@@ -15,7 +15,6 @@ TestService -> GetTestMessageResponse: GetTestMessage
 # Edges from service to RPC types
 TestService <- CreateTestMessageRequest: CreateTestMessage
 TestService -> CreateTestMessageResponse: CreateTestMessage
-# oh yueah
 
 # Class - Address
 Address: {
@@ -26,6 +25,20 @@ Address: {
   country: string
   type: Address_AddressTypeStatus
 }
+
+  
+# Enum - Address_AddressTypeStatus
+Address_AddressTypeStatus: {
+  grid-columns: 2
+  grid-gap: 0
+  Address_ADDRESS_TYPE_STATUS_UNSPECIFIED
+  Address_ADDRESS_TYPE_STATUS_HOME
+  Address_ADDRESS_TYPE_STATUS_WORK
+  0
+  1
+  2
+}
+
 Address -> Address_AddressTypeStatus
 
 # Class - TestMessage
@@ -39,7 +52,10 @@ TestMessage: {
   metadata: repeated map<string, string>
   text_payload: string
   binary_payload: bytes
+  created_at: Timestamp
+  any_payload: Any
 }
+
 TestMessage -> Status
 TestMessage -> Address
 
@@ -49,11 +65,13 @@ GetTestMessageRequest: {
   id: string
 }
 
+
 # Class - GetTestMessageResponse
 GetTestMessageResponse: {
   shape: class
   message: TestMessage
 }
+
 GetTestMessageResponse -> TestMessage
 
 # Class - CreateTestMessageRequest
@@ -61,6 +79,7 @@ CreateTestMessageRequest: {
   shape: class
   message: TestMessage
 }
+
 CreateTestMessageRequest -> TestMessage
 
 # Class - CreateTestMessageResponse
@@ -68,9 +87,13 @@ CreateTestMessageResponse: {
   shape: class
   message: TestMessage
 }
+
 CreateTestMessageResponse -> TestMessage
 
 
+
+
+  
 # Enum - Status
 Status: {
   grid-columns: 2
@@ -82,4 +105,5 @@ Status: {
   1
   2
 }
+
 

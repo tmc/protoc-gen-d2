@@ -13,7 +13,7 @@ import (
 )
 
 // generateFile processes a single proto file.
-func generateFile(gen *protogen.Plugin, f *protogen.File) {
+func generateFile(gen *protogen.Plugin, f *protogen.File, skipTypeRe string) {
 	// capture to bytes buffer
 	buf := new(bytes.Buffer)
 

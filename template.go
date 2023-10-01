@@ -1,6 +1,7 @@
 package main
 
 import (
+	"regexp"
 	"text/template"
 
 	"google.golang.org/protobuf/compiler/protogen"
@@ -10,6 +11,17 @@ import (
 var tmpl = template.Must(template.New("d2Diagram").Funcs(template.FuncMap{
 	"d2Name": func(msg *protogen.Message) string {
 		return msg.GoIdent.GoName
+	},
+	"shouldSkipEdgeTo": func(f *protogen.Field) bool {
+		tsre := regexp.MustCompile(*typeSkipEdgeToRe)
+		shouldSkip := (f.Enum == nil && f.Message == nil) || f.Desc.IsMap()
+		if f.Message != nil {
+			typeName := string(f.Message.Desc.FullName())
+			if tsre.MatchString(typeName) {
+				return true
+			}
+		}
+		return shouldSkip
 	},
 	"fieldType": func(field *protogen.Field) string {
 		// Check if the field is a map
@@ -52,10 +64,9 @@ var tmpl = template.Must(template.New("d2Diagram").Funcs(template.FuncMap{
 {{$service.GoName}} <- {{.Input.GoIdent.GoName}}: {{$method.GoName}}
 {{$service.GoName}} -> {{.Output.GoIdent.GoName}}: {{$method.GoName}}
 
+{{- end}}
+{{- end}}
 
-{{- end}}
-{{- end}}
-# oh yueah
 {{- range .Messages}}
 {{ $message := . }}
 # Class - {{d2Name .}}
@@ -65,15 +76,18 @@ var tmpl = template.Must(template.New("d2Diagram").Funcs(template.FuncMap{
   {{.Desc.TextName}}: {{if eq .Desc.Cardinality.String "repeated"}}repeated {{end}}{{fieldType .}}
   {{- end}}
 }
+{{ range .Enums}}
+  {{ template "enum" . }}
+{{- end}}
 {{- range .Fields}}
-  {{- if or .Enum (and .Message (not .Desc.IsMap)) }}
+  {{- if not (shouldSkipEdgeTo .) }}
 {{d2Name $message}} -> {{fieldType .}}
   {{- end }}
 {{- end }}
 
 {{- end}}
 
-{{ range .Enums}}
+{{ define "enum" }}
 # Enum - {{.GoIdent.GoName}}
 {{.GoIdent.GoName}}: {
   grid-columns: 2
@@ -85,6 +99,10 @@ var tmpl = template.Must(template.New("d2Diagram").Funcs(template.FuncMap{
   {{.Desc.Number}}
   {{- end}}
 }
+{{ end }}
+
+{{ range .Enums}}
+  {{ template "enum" . }}
 {{- end}}
 
 `))

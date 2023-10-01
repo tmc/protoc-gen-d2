@@ -2,6 +2,9 @@ syntax = "proto3";
 
 package acme.test.v1;
 
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
 // Sample service for our test proto.
 service TestService {
   // GetTestMessage retrieves a TestMessage
@@ -43,6 +46,8 @@ message TestMessage {
     string text_payload = 7;
     bytes binary_payload = 8;
   }
+  google.protobuf.Timestamp created_at = 9; // Timestamp field
+  google.protobuf.Any any_payload = 10; // Any field
 }
 
 
